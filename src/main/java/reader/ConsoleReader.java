@@ -93,22 +93,32 @@ public class ConsoleReader {
 
 
     private void showContent(Scanner scanner) {
-        for (int i = 0; i < bookVO.getContents().getChapters().size(); i++) {
-            System.out.println(i + ":" + bookVO.getContents().getChapters().get(i).getChapterName());
-        }
-        System.out.print("想看哪一个章节:");
-        boolean flag = false;
-        while (!flag) {
-            try {
-                String value = scanner.nextLine();
-                int page = Integer.parseInt(value);
-                bookVO.setChapter(page);
-                flag = true;
-            } catch (Exception e) {
-                System.out.println("请输入正确的章节序号!");
-            }
+        int j = 0;
+        for (ChapterVO chapterVO : bookVO.getContents().getChapters()) {
+            System.out.println(j + ":" + chapterVO.getChapterName());
+            j++;
+            if (j % 20 == 0) {
+                System.out.print("想看哪一个章节(n:显示下面20章):");
 
+                String value = scanner.nextLine();
+                if (value.equals("n")) {
+                    continue;
+                } else {
+                    while (true) {
+                        try {
+                            int page = Integer.parseInt(value);
+                            bookVO.setChapter(page);
+                            return;
+                        } catch (Exception e) {
+                            System.out.print("请输入正确的章节序号:");
+                            value = scanner.nextLine();
+                        }
+                    }
+                }
+            }
         }
+
+
     }
 
     private void jump(int page) throws IOException {
@@ -117,34 +127,34 @@ public class ConsoleReader {
         addContent();
     }
 
-    private void switchBookSite() {
-        while (this.bookSite == null) {
-
-            for (int i = 0; i < BookSiteEnum.values().length; i++) {
-                System.out.println(i + ":" + BookSiteEnum.values()[i].getDesc());
-            }
-            System.out.print("选择书库:");
-            String value = scanner.nextLine();
-            int index = Integer.parseInt(value);
-            this.bookSite = BookSiteEnum.values()[index].getBookSite();
-        }
-    }
 
     private void searchBook() throws IOException {
         while (this.bookVO == null) {
             try {
                 System.out.print("搜索:");
                 String value = scanner.nextLine();
-                List<SearchResultVO> list = bookSite.search(value);
-                for (int i = 0; i < list.size(); i++) {
-                    System.out.println(i + ":" + list.get(i).getBookName());
+                Map<BookSiteEnum, List<SearchResultVO>> tmp = new HashMap<>();
+                for (int i = 0; i < BookSiteEnum.values().length; i++) {
+                    BookSiteEnum bookSiteEnum = BookSiteEnum.values()[i];
+                    List<SearchResultVO> list = bookSiteEnum.getBookSite().search(value);
+                    tmp.put(bookSiteEnum, list);
+                    System.out.println(bookSiteEnum.getDesc());
+                    for (int j = 0; j < list.size(); j++) {
+                        System.out.println(i + ":" + j + ":" + list.get(j).getBookName());
+                    }
                 }
+
+
                 System.out.print("想看哪本书:");
                 value = scanner.nextLine();
-                int index = Integer.parseInt(value);
+                String[] vals = value.split(":", 2);
+                int index1 = Integer.parseInt(vals[0]);
+                int index2 = Integer.parseInt(vals[1]);
+                BookSiteEnum bookSiteEnum = BookSiteEnum.values()[index1];
+                this.bookSite = bookSiteEnum.getBookSite();
                 this.bookVO = new BookVO();
                 contentQueue.clear();
-                bookVO.setContents(bookSite.getContents(list.get(index).getBookUrl()));
+                bookVO.setContents(bookSite.getContents(tmp.get(bookSiteEnum).get(index2).getBookUrl()));
                 showContent(scanner);
             } catch (Exception e) {
                 System.out.println("系统错误!");
@@ -168,14 +178,12 @@ public class ConsoleReader {
 
 
         do {
-            switchBookSite();
             searchBook();
 
             if (!isStart) {
                 t.start();
                 isStart = true;
             }
-
 
             List<String> list = pollContent();
             list.forEach(System.out::println);

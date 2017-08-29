@@ -18,12 +18,17 @@ import java.util.List;
 public class BqgSite implements IBookSite {
 
 
-    private final String searchUrl = "http://zhannei.baidu.com/cse/search?q=%s&s=3654077655350271938&entry=1";
-    private final String rootUrl = "http://www.biqudao.com%s";
+    protected String getSearchUrl() {
+        return "http://zhannei.baidu.com/cse/search?q=%s&s=3654077655350271938&entry=1";
+    }
+
+    protected String getRootUrl() {
+        return "http://www.biqudao.com%s";
+    }
 
     @Override
     public List<SearchResultVO> search(String name) throws IOException {
-        return BDZNSearch(searchUrl, name);
+        return BDZNSearch(getSearchUrl(), name);
     }
 
     @Override
@@ -34,12 +39,12 @@ public class BqgSite implements IBookSite {
     }
 
     @Override
-    public ChapterVO getChapter(String bookUrl,Element ele) {
+    public ChapterVO getChapter(String bookUrl, Element ele) {
         String name = ele.text();
         String ul = ele.attr("href");
         ChapterVO chapterVO = new ChapterVO();
         chapterVO.setChapterName(name);
-        chapterVO.setChapterUrl(String.format(rootUrl, ul));
+        chapterVO.setChapterUrl(String.format(getRootUrl(), ul));
         return chapterVO;
     }
 
