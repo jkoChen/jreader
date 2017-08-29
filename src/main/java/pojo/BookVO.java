@@ -1,28 +1,26 @@
 package pojo;
 
-import java.util.List;
-
 /**
  * @author j.chen@91kge.com
  * create on 2017/8/23
  */
 public class BookVO {
 
-    private int page = 0;//当前章节
+    private int chapter = 0;//当前章节
 
     private ContentsVO contents;
 
     public ChapterVO getCurrentChapter() {
-        return getChapterByPage(page);
+        return getChapterByPage(chapter);
     }
 
     public ChapterVO getNextChapter() {
-        return getChapterByPage(page + 1);
+        return getChapterByPage(chapter + 1);
 
     }
 
     public ChapterVO getPreChapter() {
-        return getChapterByPage(page - 1);
+        return getChapterByPage(chapter - 1);
     }
 
     public ChapterVO getChapterByPage(int page) {
@@ -32,12 +30,12 @@ public class BookVO {
         return null;
     }
 
-    public int getPage() {
-        return page;
+    public int getChapter() {
+        return chapter;
     }
 
-    public void setPage(int page) {
-        this.page = page;
+    public void setChapter(int chapter) {
+        this.chapter = chapter;
     }
 
     public ContentsVO getContents() {
