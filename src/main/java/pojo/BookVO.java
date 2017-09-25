@@ -7,8 +7,18 @@ package pojo;
 public class BookVO {
 
     private int chapter = 0;//当前章节
+    private String name;
 
     private ContentsVO contents;
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public ChapterVO getCurrentChapter() {
         return getChapterByPage(chapter);
@@ -35,6 +45,12 @@ public class BookVO {
     }
 
     public void setChapter(int chapter) {
+        if (chapter < 0) {
+            chapter = 0;
+        }
+        if (chapter >= contents.getChapters().size()) {
+            chapter = contents.getChapters().size() - 1;
+        }
         this.chapter = chapter;
     }
 

@@ -23,4 +23,9 @@ public class SearchResultVO {
     public void setBookUrl(String bookUrl) {
         this.bookUrl = bookUrl;
     }
+
+    @Override
+    public String toString() {
+        return this.bookName;
+    }
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="448.0" prefWidth="678.0"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="reader.gui.GuiController">
+   <children>
+      <TextField fx:id="searchText" layoutX="76.0" layoutY="25.0" prefHeight="23.0" prefWidth="300.0" promptText="请输入书名" />
+      <Button fx:id="searchButton" layoutX="552.0" layoutY="25.0" mnemonicParsing="false" text="搜索" />
+      <Button fx:id="catalogButton" layoutX="552.0" layoutY="68.0" mnemonicParsing="false" text="目录" />
+      <Button fx:id="preButton" layoutX="154.0" layoutY="408.0" mnemonicParsing="false" text="上一章" />
+      <Button fx:id="nextButton" layoutX="389.0" layoutY="408.0" mnemonicParsing="false" text="下一章" />
+      <TextArea fx:id="content" layoutX="77.0" layoutY="98.0" prefHeight="301.0" prefWidth="543.0" />
+      <ListView fx:id="catalog" layoutX="77.0" layoutY="98.0" prefHeight="301.0" prefWidth="206.0" />
+      <ListView fx:id="searchResult" layoutX="77.0" layoutY="98.0" prefHeight="301.0" prefWidth="206.0" />
+      <ChoiceBox fx:id="siteChoice" layoutX="389.0" layoutY="25.0" prefWidth="150.0" />
+      <Label fx:id="bookLabel" layoutX="100.0" layoutY="61.0" prefHeight="23.0" prefWidth="160.0" />
+      <Label fx:id="chapterLabel" layoutX="280.0" layoutY="61.0" prefHeight="23.0" prefWidth="219.0" />
+   </children>
+</AnchorPane>

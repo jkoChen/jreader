@@ -29,4 +29,9 @@ public enum BookSiteEnum {
         this.bookSite = bookSite;
         this.desc = desc;
     }
+
+    @Override
+    public String toString() {
+        return this.desc;
+    }
 }

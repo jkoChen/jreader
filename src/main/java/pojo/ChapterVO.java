@@ -43,4 +43,9 @@ public class ChapterVO {
     public void setChapterUrl(String chapterUrl) {
         this.chapterUrl = chapterUrl;
     }
+
+    @Override
+    public String toString() {
+        return this.chapterName;
+    }
 }

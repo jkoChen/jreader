@@ -31,19 +31,8 @@ public interface IBookSite {
         Document document = Jsoup.connect(chapterVO.getChapterUrl()).get();
         Element element = getChapterContent(document);
         String value = element.text();
-        String[] ss = value.replaceAll("</?[^>]+>", "").split("\\s+");
-        StringBuilder sb = new StringBuilder();
-        for (String s : ss) {
-            s = s.replace((char) 12288, ' ');
-            s = StringUtils.zipStr(s).trim();
-            for (char c : s.toCharArray()) {
-                sb.append(c);
-                if (sb.length() % 40 == 0) {
-                    sb.append("\n");
-                }
-            }
-        }
-        chapterVO.setContent(sb.toString());
+
+        chapterVO.setContent(value);
         chapterVO.setFull(true);
     }
 
