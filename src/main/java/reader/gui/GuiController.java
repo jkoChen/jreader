@@ -1,10 +1,13 @@
 package reader.gui;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Font;
 import pojo.BookVO;
 import pojo.ChapterVO;
 import pojo.SearchResultVO;
@@ -32,6 +35,8 @@ public class GuiController implements Initializable {
     public TextField searchText;
     public Label chapterLabel;
     public Label bookLabel;
+    public Button small;
+    public Button big;
 
     private BookVO bookVO;
     private BookSiteEnum bookSite;
@@ -83,12 +88,9 @@ public class GuiController implements Initializable {
     }
 
     private void chooseChapter(MouseEvent event) {
-        if (event.getClickCount() == 2) {
-            int index = catalog.getSelectionModel().getSelectedIndex();
-            bookVO.setChapter(index);
-            showContent();
-
-        }
+        int index = catalog.getSelectionModel().getSelectedIndex();
+        bookVO.setChapter(index);
+        showContent();
     }
 
     private void showContent() {
@@ -107,7 +109,10 @@ public class GuiController implements Initializable {
             }
         });
         t.start();
-
+        catalog.getSelectionModel().select(bookVO.getChapter());
+        if (!catalog.isVisible()) {
+            catalog.scrollTo(bookVO.getChapter() - 4);
+        }
         ChapterVO current = bookVO.getCurrentChapter();
         chapterLabel.setText(current.getChapterName());
         if (!current.isFull()) {
@@ -121,7 +126,7 @@ public class GuiController implements Initializable {
         content.setText(current.getContent());
         preButton.setVisible(true);
         nextButton.setVisible(true);
-        catalog.setVisible(false);
+//        catalog.setVisible(false);
     }
 
     @Override
@@ -142,12 +147,49 @@ public class GuiController implements Initializable {
             if (e.getCode() == KeyCode.ENTER) {
                 search();
             }
-
+            if (e.getCode() == KeyCode.DOWN) {
+                SingleSelectionModel singleSelectionModel = siteChoice.getSelectionModel();
+                singleSelectionModel.select(singleSelectionModel.getSelectedIndex() + 1);
+            }
+            if (e.getCode() == KeyCode.UP) {
+                SingleSelectionModel singleSelectionModel = siteChoice.getSelectionModel();
+                singleSelectionModel.select(singleSelectionModel.getSelectedIndex() - 1);
+            }
         });
 
         content.setEditable(false);
         content.setWrapText(true);
+        content.setFont(Font.font(16));
+        content.setOnMouseClicked(e -> {
+            if (catalog.isVisible()) {
+                catalog.setVisible(false);
+            }
+        });
+        content.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                case LEFT:
+                    preButton.getOnMouseClicked().handle(null);
+                    break;
+                case RIGHT:
+                    nextButton.getOnMouseClicked().handle(null);
+                    break;
+                case M:
+                    if(catalogButton.isVisible()){
+                        catalogButton.getOnMouseClicked().handle(null);
+                    }
+                    break;
+            }
 
+
+        });
+        small.setOnMouseClicked(e -> {
+            content.setFont(Font.font(content.getFont().getSize() - 1));
+
+        });
+        big.setOnMouseClicked(e -> {
+            content.setFont(Font.font(content.getFont().getSize() + 1));
+
+        });
         preButton.setOnMouseClicked(e -> {
             bookVO.setChapter(bookVO.getChapter() - 1);
             showContent();

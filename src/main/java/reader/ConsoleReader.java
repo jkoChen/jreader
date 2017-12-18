@@ -17,34 +17,11 @@ public class ConsoleReader {
 
     private BookVO bookVO = null;
 
-    private Queue<String> contentQueue = new LinkedList<>();
     private Scanner scanner;
 
-    private final int len = 10;
+    private int len = 50;
     private final int lazy = 5;
     private int MAX_LAZY = 0;
-
-
-    public void addContent() throws IOException {
-        ChapterVO chapterVO = bookVO.getCurrentChapter();
-        addQueue(chapterVO, contentQueue);
-
-
-    }
-
-    private void addQueue(ChapterVO chapterVO, Queue<String> queue) throws IOException {
-        if (chapterVO == null) {
-            return;
-        }
-        if (!chapterVO.isFull()) {
-            bookSite.setChapterContent(chapterVO);
-        }
-        queue.offer(bookVO.getContents().getChapters().indexOf(chapterVO) + ":" + chapterVO.getChapterName());
-        String[] cos = chapterVO.getContent().split("\n");
-        for (String s : cos) {
-            queue.offer(s);
-        }
-    }
 
 
     private void lazy() throws IOException {
@@ -75,20 +52,6 @@ public class ConsoleReader {
         }
 
 
-    }
-
-    private List<String> pollContent() throws IOException {
-        if (contentQueue.size() < len) {
-            bookVO.setChapter(bookVO.getChapter() + 1);
-            addContent();
-        }
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < len; i++) {
-            list.add(contentQueue.poll());
-        }
-
-
-        return list;
     }
 
 
@@ -122,9 +85,7 @@ public class ConsoleReader {
     }
 
     private void jump(int page) throws IOException {
-        contentQueue.clear();
         bookVO.setChapter(page);
-        addContent();
     }
 
 
@@ -153,7 +114,6 @@ public class ConsoleReader {
                 BookSiteEnum bookSiteEnum = BookSiteEnum.values()[index1];
                 this.bookSite = bookSiteEnum.getBookSite();
                 this.bookVO = new BookVO();
-                contentQueue.clear();
                 bookVO.setContents(bookSite.getContents(tmp.get(bookSiteEnum).get(index2).getBookUrl()));
                 showContent(scanner);
             } catch (Exception e) {
@@ -175,9 +135,19 @@ public class ConsoleReader {
             }
         });
         String value = null;
+        System.out.print("请输入每行打印字数:");
+        String val = scanner.nextLine();
+        if (val != null) {
+            try {
+                Integer i = Integer.parseInt(val);
+                len = i;
+            } catch (Exception e) {
 
+            }
+        }
 
         do {
+
             searchBook();
 
             if (!isStart) {
@@ -185,38 +155,58 @@ public class ConsoleReader {
                 isStart = true;
             }
 
-            List<String> list = pollContent();
-            list.forEach(System.out::println);
+            ChapterVO chapterVO = bookVO.getCurrentChapter();
+            if (!chapterVO.isFull()) {
+                bookSite.setChapterContent(chapterVO);
+            }
+            System.out.println(chapterVO.getChapterName());
+            print(chapterVO.getContent());
 
             System.out.println(LocalTime.now().toString());
             value = scanner.nextLine();
-            if (value != null) {
-                if (value.equalsIgnoreCase("n")) {
-                    jump(this.bookVO.getChapter() + 1);
-                } else if (value.equalsIgnoreCase("p")) {
-                    jump(this.bookVO.getChapter() - 1);
+            if (value == null) {
+                value = "n";
+            }
+            if (value.equalsIgnoreCase("n")) {
+                jump(this.bookVO.getChapter() + 1);
+            } else if (value.equalsIgnoreCase("p")) {
+                jump(this.bookVO.getChapter() - 1);
 
-                } else if (value.equalsIgnoreCase("m")) {
-                    contentQueue.clear();
-                    showContent(scanner);
-                } else if (value.equalsIgnoreCase("r")) {
-                    this.bookVO = null;
-                } else if (value.equalsIgnoreCase("rs")) {
-                    this.bookSite = null;
-                    this.bookVO = null;
-                } else if (value.startsWith("M:")) {
-                    String[] page = value.split(":", 2);
-                    if (page.length == 2) {
-                        try {
-                            int v = Integer.parseInt(page[1]);
-                            jump(v);
-                        } catch (Exception e) {
+            } else if (value.equalsIgnoreCase("m")) {
+                showContent(scanner);
+            } else if (value.equalsIgnoreCase("r")) {
+                this.bookVO = null;
+            } else if (value.equalsIgnoreCase("rs")) {
+                this.bookSite = null;
+                this.bookVO = null;
+            } else if (value.startsWith("M:")) {
+                String[] page = value.split(":", 2);
+                if (page.length == 2) {
+                    try {
+                        int v = Integer.parseInt(page[1]);
+                        jump(v);
+                    } catch (Exception e) {
 
-                        }
                     }
                 }
+            } else {
+                jump(this.bookVO.getChapter() + 1);
             }
         } while (!"quit".equalsIgnoreCase(value));
+
+    }
+
+    private void print(String content) {
+        String value = content;
+        while (value != null) {
+            String var = value.substring(0, Math.min(value.length(), len));
+            if (value.length() >= len) {
+                value = value.substring(len);
+            } else {
+                value = null;
+            }
+            System.out.println(var);
+        }
 
     }
 

@@ -23,4 +23,9 @@ public class XbqgSite extends BqgSite {
     protected String getRootUrl() {
         return "http://www.xxbiquge.com%s";
     }
+
+    @Override
+    public String formatContent(String content) {
+        return content.replaceAll("\\s","\n").replaceAll("readx\\(\\);","");
+    }
 }

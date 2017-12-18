@@ -27,12 +27,15 @@ public interface IBookSite {
 
     Element getChapterContent(Document document);
 
+    default String formatContent(String content){
+        return content;
+    }
+
     default void setChapterContent(ChapterVO chapterVO) throws IOException {
         Document document = Jsoup.connect(chapterVO.getChapterUrl()).get();
         Element element = getChapterContent(document);
         String value = element.text();
-
-        chapterVO.setContent(value);
+        chapterVO.setContent(formatContent(value));
         chapterVO.setFull(true);
     }
 

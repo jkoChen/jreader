@@ -7,20 +7,30 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="448.0" prefWidth="678.0"
-            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="reader.gui.GuiController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="reader.gui.GuiController">
    <children>
-      <TextField fx:id="searchText" layoutX="76.0" layoutY="25.0" prefHeight="23.0" prefWidth="300.0" promptText="请输入书名" />
-      <Button fx:id="searchButton" layoutX="552.0" layoutY="25.0" mnemonicParsing="false" text="搜索" />
-      <Button fx:id="catalogButton" layoutX="552.0" layoutY="68.0" mnemonicParsing="false" text="目录" />
-      <Button fx:id="preButton" layoutX="154.0" layoutY="408.0" mnemonicParsing="false" text="上一章" />
-      <Button fx:id="nextButton" layoutX="389.0" layoutY="408.0" mnemonicParsing="false" text="下一章" />
-      <TextArea fx:id="content" layoutX="77.0" layoutY="98.0" prefHeight="301.0" prefWidth="543.0" />
-      <ListView fx:id="catalog" layoutX="77.0" layoutY="98.0" prefHeight="301.0" prefWidth="206.0" />
-      <ListView fx:id="searchResult" layoutX="77.0" layoutY="98.0" prefHeight="301.0" prefWidth="206.0" />
-      <ChoiceBox fx:id="siteChoice" layoutX="389.0" layoutY="25.0" prefWidth="150.0" />
+      <TextField fx:id="searchText" layoutX="22.0" layoutY="25.0" prefHeight="23.0" prefWidth="300.0" promptText="请输入书名" />
+      <Button fx:id="searchButton" layoutX="518.0" layoutY="25.0" mnemonicParsing="false" text="搜索" />
+      <Button fx:id="catalogButton" layoutX="576.0" layoutY="104.0" mnemonicParsing="false" text="目录" />
+      <Button fx:id="preButton" layoutX="569.0" layoutY="270.0" mnemonicParsing="false" text="上一章" />
+      <Button fx:id="nextButton" layoutX="570.0" layoutY="334.0" mnemonicParsing="false" text="下一章" />
+      <TextArea fx:id="content" layoutX="22.0" layoutY="88.0" prefHeight="692.0" prefWidth="537.0" />
+      <ListView fx:id="catalog" layoutX="22.0" layoutY="88.0" prefHeight="609.0" prefWidth="206.0" />
+      <ListView fx:id="searchResult" layoutX="22.0" layoutY="88.0" prefHeight="609.0" prefWidth="206.0" />
+      <ChoiceBox fx:id="siteChoice" layoutX="349.0" layoutY="25.0" prefWidth="150.0" />
       <Label fx:id="bookLabel" layoutX="100.0" layoutY="61.0" prefHeight="23.0" prefWidth="160.0" />
       <Label fx:id="chapterLabel" layoutX="280.0" layoutY="61.0" prefHeight="23.0" prefWidth="219.0" />
+      <Button fx:id="big" layoutX="580.0" layoutY="149.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="12.0" text="+">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="small" layoutX="580.0" layoutY="213.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="32.0" text="-">
+         <font>
+            <Font name="YouYuan" size="14.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
