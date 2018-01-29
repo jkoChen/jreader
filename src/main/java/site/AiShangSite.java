@@ -7,7 +7,9 @@ import pojo.ChapterVO;
 import pojo.SearchResultVO;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author j.chen@91kge.com  create on 2017/8/29
@@ -47,5 +49,10 @@ public class AiShangSite implements IBookSite {
     @Override
     public Element getChapterContent(Document document) {
         return document.getElementById("contents");
+    }
+
+    @Override
+    public Set<String> AD() {
+        return Collections.singleton("一秒记住【爱♂尚★小△说§网 WwW.23XS.Cc】，精彩小说无弹窗免费阅读！");
     }
 }

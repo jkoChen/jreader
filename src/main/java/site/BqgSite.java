@@ -9,7 +9,9 @@ import pojo.SearchResultVO;
 import utils.StringUtils;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author j.chen@91kge.com
@@ -53,5 +55,8 @@ public class BqgSite implements IBookSite {
         return document.getElementById("content");
     }
 
-
+    @Override
+    public Set<String> AD() {
+        return Collections.singleton("chaptererror();");
+    }
 }

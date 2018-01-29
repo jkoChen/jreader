@@ -11,7 +11,9 @@ import utils.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author j.chen@91kge.com  create on 2017/8/29
@@ -27,14 +29,31 @@ public interface IBookSite {
 
     Element getChapterContent(Document document);
 
-    default String formatContent(String content){
-        return content;
+    default Set<String> AD() {
+        return new HashSet<>();
+    }
+
+    default String formatContent(String content) {
+        for (String ad : AD()) {
+            content = content.replaceAll(ad, "");
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String s : content.split("\n")) {
+
+            s = s.replaceAll("<(S*?)[^>]*>.*?|<.*? />", "").replaceAll("<br>", "").replaceAll("&nbsp;", "").trim();
+
+            if (!s.isEmpty()) {
+                sb.append(s).append("\n");
+            }
+
+        }
+        return sb.toString();
     }
 
     default void setChapterContent(ChapterVO chapterVO) throws IOException {
         Document document = Jsoup.connect(chapterVO.getChapterUrl()).get();
         Element element = getChapterContent(document);
-        String value = element.text();
+        String value = element.toString();
         chapterVO.setContent(formatContent(value));
         chapterVO.setFull(true);
     }
