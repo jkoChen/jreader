@@ -22,7 +22,7 @@ public class DownloadBook {
     private BookVO bookVO = null;
 
     public void download(String value) throws IOException {
-        bookSite = new AiShangSite();
+        bookSite = new BqgSite();
         List<SearchResultVO> list = bookSite.search(value);
         for (SearchResultVO r : list) {
             System.out.println(r.getBookName());
@@ -94,8 +94,7 @@ public class DownloadBook {
 
     public static void main(String[] args) throws IOException {
         DownloadBook d = new DownloadBook();
-        d.download("盘龙");
-        d.download("变性");
+        d.download("儒道至圣");
 
     }
 
