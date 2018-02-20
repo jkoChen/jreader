@@ -25,8 +25,9 @@ public class DownloadBook {
         bookSite = new BqgSite();
         List<SearchResultVO> list = bookSite.search(value);
         for (SearchResultVO r : list) {
+            if(!r.getBookName().equals(value)) continue;
             System.out.println(r.getBookName());
-            File file = new File("D:/tmp/book1/" + r.getBookName() + ".txt");
+            File file = new File("D:/tmp/book/" + r.getBookName() + ".txt");
             this.bookVO = new BookVO();
             try {
                 bookVO.setContents(bookSite.getContents(r.getBookUrl()));

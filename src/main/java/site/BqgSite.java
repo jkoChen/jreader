@@ -57,6 +57,6 @@ public class BqgSite implements IBookSite {
 
     @Override
     public Set<String> AD() {
-        return Collections.singleton("chaptererror();");
+        return Collections.singleton("chaptererror\\(\\);");
     }
 }
