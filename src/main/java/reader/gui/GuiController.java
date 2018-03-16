@@ -1,16 +1,13 @@
 package reader.gui;
 
-import javafx.beans.property.DoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import pojo.BookVO;
 import pojo.ChapterVO;
-import pojo.SearchResultVO;
 import site.BookSiteEnum;
 
 import java.io.IOException;
@@ -20,6 +17,8 @@ import java.util.ResourceBundle;
 
 
 /**
+ * javafx 实现的小说GUI阅读器
+ *
  * @author j.chen@91kge.com  create on 2017/9/25
  */
 public class GuiController implements Initializable {
@@ -30,7 +29,7 @@ public class GuiController implements Initializable {
     public Button nextButton;
     public TextArea content;
     public ListView<ChapterVO> catalog;
-    public ListView<SearchResultVO> searchResult;
+    public ListView<BookVO> searchResult;
     public ChoiceBox<BookSiteEnum> siteChoice;
     public TextField searchText;
     public Label chapterLabel;
@@ -50,7 +49,7 @@ public class GuiController implements Initializable {
         BookSiteEnum bookSiteEnum = siteChoice.getValue();
         bookSite = bookSiteEnum;
         try {
-            List<SearchResultVO> searchResultCache = bookSiteEnum.getBookSite().search(searchText.getText());
+            List<BookVO> searchResultCache = bookSiteEnum.getBookSite().search(searchText.getText());
             searchResult.setVisible(true);
             searchResult.setItems(FXCollections.observableArrayList(searchResultCache));
         } catch (IOException e) {
@@ -60,19 +59,11 @@ public class GuiController implements Initializable {
 
     private void chooseBook(MouseEvent event) {
         if (event.getClickCount() == 2) {
-            SearchResultVO resultVO = searchResult.getSelectionModel().getSelectedItem();
-
-            bookVO = new BookVO();
-            bookVO.setName(resultVO.getBookName());
-            bookLabel.setText(bookVO.getName());
-            try {
-                bookVO.setContents(bookSite.getBookSite().getContents(resultVO.getBookUrl()));
-                catalog.setItems(FXCollections.observableArrayList(bookVO.getContents().getChapters()));
-                catalog.setVisible(true);
-                searchResult.setVisible(false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            bookVO = searchResult.getSelectionModel().getSelectedItem();
+            bookLabel.setText(bookVO.getBookName());
+            catalog.setItems(FXCollections.observableArrayList(bookVO.getContents().getChapters()));
+            catalog.setVisible(true);
+            searchResult.setVisible(false);
             catalogButton.setVisible(true);
         }
     }
@@ -89,40 +80,18 @@ public class GuiController implements Initializable {
 
     private void chooseChapter(MouseEvent event) {
         int index = catalog.getSelectionModel().getSelectedIndex();
-        bookVO.setChapter(index);
+        bookVO.setChapterIndex(index);
         showContent();
     }
 
     private void showContent() {
-        Thread t = new Thread(() -> {
-            int i = 0;
-            while (i <= 5) {
-                ChapterVO cache = bookVO.getChapterByPage(bookVO.getChapter() + i);
-                if (!cache.isFull()) {
-                    try {
-                        bookSite.getBookSite().setChapterContent(cache);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                i++;
-            }
-        });
-        t.start();
-        catalog.getSelectionModel().select(bookVO.getChapter());
+        bookVO.cache(5);
+        catalog.getSelectionModel().select(bookVO.getChapterIndex());
         if (!catalog.isVisible()) {
-            catalog.scrollTo(bookVO.getChapter() - 4);
+            catalog.scrollTo(bookVO.getChapterIndex() - 4);
         }
         ChapterVO current = bookVO.getCurrentChapter();
         chapterLabel.setText(current.getChapterName());
-        if (!current.isFull()) {
-            try {
-                bookSite.getBookSite().setChapterContent(current);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         content.setText(current.getContent());
         preButton.setVisible(true);
         nextButton.setVisible(true);
@@ -174,7 +143,7 @@ public class GuiController implements Initializable {
                     nextButton.getOnMouseClicked().handle(null);
                     break;
                 case M:
-                    if(catalogButton.isVisible()){
+                    if (catalogButton.isVisible()) {
                         catalogButton.getOnMouseClicked().handle(null);
                     }
                     break;
@@ -191,11 +160,11 @@ public class GuiController implements Initializable {
 
         });
         preButton.setOnMouseClicked(e -> {
-            bookVO.setChapter(bookVO.getChapter() - 1);
+            bookVO.setChapterIndex(bookVO.getChapterIndex() - 1);
             showContent();
         });
         nextButton.setOnMouseClicked(e -> {
-            bookVO.setChapter(bookVO.getChapter() + 1);
+            bookVO.setChapterIndex(bookVO.getChapterIndex() + 1);
             showContent();
         });
     }

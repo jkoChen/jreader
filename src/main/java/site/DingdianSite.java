@@ -3,9 +3,8 @@ package site;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import pojo.BookVO;
 import pojo.ChapterVO;
-import pojo.ContentsVO;
-import pojo.SearchResultVO;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +16,7 @@ public class DingdianSite implements IBookSite {
     private String searchUrl = "http://zhannei.baidu.com/cse/search?s=1682272515249779940&entry=1&q=%s";
 
     @Override
-    public List<SearchResultVO> search(String name) throws IOException {
+    public List<BookVO> search(String name) throws IOException {
         return BDZNSearch(searchUrl, name);
     }
 

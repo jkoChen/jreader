@@ -1,12 +1,10 @@
 package site;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import pojo.BookVO;
 import pojo.ChapterVO;
-import pojo.SearchResultVO;
-import utils.StringUtils;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -29,7 +27,7 @@ public class BqgSite implements IBookSite {
     }
 
     @Override
-    public List<SearchResultVO> search(String name) throws IOException {
+    public List<BookVO> search(String name) throws IOException {
         return BDZNSearch(getSearchUrl(), name);
     }
 

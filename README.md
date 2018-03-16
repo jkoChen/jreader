@@ -12,5 +12,34 @@
 ### 项目相关
 - `jsoup` 解析网页内容 
 
-### 支持的小说库
-- 完善ing
+### 支持的小说库    
+```
+site.BookSiteEnum 小说站点常量
+site    具体的实现
+```
+- 笔趣阁
+- 新笔趣阁
+- 顶点小说
+- 爱尚小说
+
+### 打包方法 
+
+打包成功后，直接运行或者使用 `java -jar abc.jar` 运行
+
+
+- 下载小说
+```
+mvn clean package -P download 
+```
+
+- console在线阅读器
+```
+mvn clean package
+或者
+mvn clean package -P console
+```
+
+- javafx 实现的gui 在线阅读器
+```
+mvn clean package -P gui
+```

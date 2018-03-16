@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
+ * GUI启动类
+ *
  * @author j.chen@91kge.com  create on 2017/9/25
  */
 public class GuiReader extends Application {

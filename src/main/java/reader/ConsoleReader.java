@@ -2,141 +2,121 @@ package reader;
 
 import pojo.BookVO;
 import pojo.ChapterVO;
-import pojo.SearchResultVO;
 import site.BookSiteEnum;
-import site.IBookSite;
 
-import java.io.IOException;
 import java.time.LocalTime;
 import java.util.*;
 
+/**
+ * 命令行阅读器
+ */
 public class ConsoleReader {
 
-
-    private IBookSite bookSite;
 
     private BookVO bookVO = null;
 
     private Scanner scanner;
 
     private int len = 50;
-    private final int lazy = 5;
-    private int MAX_LAZY = 0;
 
 
-    private void lazy() throws IOException {
-        while (true) {
-            try {
-                if (MAX_LAZY < bookVO.getChapter() + lazy) {
-                    int page = bookVO.getChapter();
-                    while (MAX_LAZY < bookVO.getChapter() + lazy) {
-                        page = page + 1;
-                        ChapterVO chapterVO = bookVO.getChapterByPage(page);
-                        if (!chapterVO.isFull()) {
-                            bookSite.setChapterContent(chapterVO);
-                        }
-                        MAX_LAZY = page;
-
-                    }
-                } else {
-                    try {
-                        Thread.sleep(10000L);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (Exception e) {
-                MAX_LAZY = 0;
-            }
-
-        }
-
-
-    }
-
-
-    private void showContent(Scanner scanner) {
-        int j = 0;
-        for (ChapterVO chapterVO : bookVO.getContents().getChapters()) {
-            System.out.println(j + ":" + chapterVO.getChapterName());
-            j++;
-            if (j % 20 == 0) {
+    private void showContent() {
+        for (int i = 0; i < bookVO.getContents().getChapters().size() - bookVO.getChapterIndex(); i++) {
+            ChapterVO chapterVO = bookVO.getContents().getChapters().get(bookVO.getChapterIndex() + i);
+            System.out.println(bookVO.getChapterIndex() + i + ":" + chapterVO.getChapterName() + (i == 0 ? "(*)" : ""));
+            if ((i + 1) % 20 == 0) {
                 System.out.print("想看哪一个章节(n:显示下面20章):");
-
-                String value = scanner.nextLine();
+                String value = getInput();
                 if (value.equals("n")) {
                     continue;
                 } else {
                     while (true) {
                         try {
                             int page = Integer.parseInt(value);
-                            bookVO.setChapter(page);
+                            bookVO.setChapterIndex(page);
                             return;
                         } catch (Exception e) {
                             System.out.print("请输入正确的章节序号:");
-                            value = scanner.nextLine();
+                            value = getInput();
                         }
                     }
                 }
             }
         }
-
-
     }
 
-    private void jump(int page) throws IOException {
-        bookVO.setChapter(page);
+    private void jump(int page) {
+        bookVO.setChapterIndex(page);
     }
 
+    private BookSiteEnum selectBookSite() {
+        BookSiteEnum bookSiteEnum = null;
 
-    private void searchBook() throws IOException {
+        while (bookSiteEnum == null) {
+            try {
+                for (int i = 0; i < BookSiteEnum.values().length; i++) {
+                    System.out.println((i + 1) + ":" + BookSiteEnum.values()[i].getDesc());
+                }
+                System.out.print("选择小说源:");
+                String siteNum = getInput();
+                bookSiteEnum = BookSiteEnum.values()[Integer.parseInt(siteNum) - 1];
+            } catch (Exception e) {
+                System.err.println("小说源序号有无");
+            }
+        }
+        return bookSiteEnum;
+    }
+
+    private BookVO selectBook(List<BookVO> list) {
+        BookVO bookVO = null;
+        while (bookVO == null) {
+            try {
+                for (int i = 1; i < list.size() + 1; i++) {
+                    System.out.println(i + ":" + list.get(i - 1).getBookName());
+                }
+                System.out.print("想看哪本书:");
+                String value = getInput();
+                bookVO = list.get(Integer.parseInt(value) - 1);
+            } catch (Exception e) {
+                System.err.println("书本序号有误");
+            }
+
+
+        }
+        return bookVO;
+    }
+
+    private String getInput() {
+        String value = scanner.nextLine();
+        if ("quit".equalsIgnoreCase(value)) {
+            System.exit(0);
+        }
+        return value;
+    }
+
+    private void searchBook() {
         while (this.bookVO == null) {
             try {
+                BookSiteEnum bookSiteEnum = selectBookSite();
+                System.out.print(bookSiteEnum.getDesc() + "   ");
                 System.out.print("搜索:");
-                String value = scanner.nextLine();
-                Map<BookSiteEnum, List<SearchResultVO>> tmp = new HashMap<>();
-                for (int i = 0; i < BookSiteEnum.values().length; i++) {
-                    BookSiteEnum bookSiteEnum = BookSiteEnum.values()[i];
-                    List<SearchResultVO> list = bookSiteEnum.getBookSite().search(value);
-                    tmp.put(bookSiteEnum, list);
-                    System.out.println(bookSiteEnum.getDesc());
-                    for (int j = 0; j < list.size(); j++) {
-                        System.out.println(i + ":" + j + ":" + list.get(j).getBookName());
-                    }
-                }
-
-
-                System.out.print("想看哪本书:");
-                value = scanner.nextLine();
-                String[] vals = value.split(":", 2);
-                int index1 = Integer.parseInt(vals[0]);
-                int index2 = Integer.parseInt(vals[1]);
-                BookSiteEnum bookSiteEnum = BookSiteEnum.values()[index1];
-                this.bookSite = bookSiteEnum.getBookSite();
-                this.bookVO = new BookVO();
-                bookVO.setContents(bookSite.getContents(tmp.get(bookSiteEnum).get(index2).getBookUrl()));
-                showContent(scanner);
+                String value = getInput();
+                List<BookVO> list = bookSiteEnum.getBookSite().search(value);
+                this.bookVO = selectBook(list);
+                bookVO.cache();
+                showContent();
             } catch (Exception e) {
-                System.out.println("系统错误!");
+                System.err.println("系统错误!");
             }
 
         }
     }
 
-    public void start() throws IOException {
+    public void start() {
         scanner = new Scanner(System.in);
-
-        boolean isStart = false;
-        Thread t = new Thread(() -> {
-            try {
-                lazy();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
         String value = null;
         System.out.print("请输入每行打印字数:");
-        String val = scanner.nextLine();
+        String val = getInput();
         if (val != null) {
             try {
                 Integer i = Integer.parseInt(val);
@@ -147,37 +127,19 @@ public class ConsoleReader {
         }
 
         do {
-
             searchBook();
-
-            if (!isStart) {
-                t.start();
-                isStart = true;
-            }
-
-            ChapterVO chapterVO = bookVO.getCurrentChapter();
-            if (!chapterVO.isFull()) {
-                bookSite.setChapterContent(chapterVO);
-            }
-            System.out.println(chapterVO.getChapterName());
-            print(chapterVO.getContent());
-
-            System.out.println(LocalTime.now().toString());
-            value = scanner.nextLine();
-            if (value == null) {
+            print();
+            value = getInput();
+            if (value == null || value.trim().isEmpty()) {
                 value = "n";
             }
             if (value.equalsIgnoreCase("n")) {
-                jump(this.bookVO.getChapter() + 1);
+                jump(this.bookVO.getChapterIndex() + 1);
             } else if (value.equalsIgnoreCase("p")) {
-                jump(this.bookVO.getChapter() - 1);
-
+                jump(this.bookVO.getChapterIndex() - 1);
             } else if (value.equalsIgnoreCase("m")) {
-                showContent(scanner);
+                showContent();
             } else if (value.equalsIgnoreCase("r")) {
-                this.bookVO = null;
-            } else if (value.equalsIgnoreCase("rs")) {
-                this.bookSite = null;
                 this.bookVO = null;
             } else if (value.startsWith("M:")) {
                 String[] page = value.split(":", 2);
@@ -190,28 +152,22 @@ public class ConsoleReader {
                     }
                 }
             } else {
-                jump(this.bookVO.getChapter() + 1);
+                jump(this.bookVO.getChapterIndex() + 1);
             }
         } while (!"quit".equalsIgnoreCase(value));
 
     }
 
-    private void print(String content) {
-        String value = content;
-        while (value != null) {
-            String var = value.substring(0, Math.min(value.length(), len));
-            if (value.length() >= len) {
-                value = value.substring(len);
-            } else {
-                value = null;
-            }
-            System.out.println(var);
-        }
-
+    private void print() {
+        ChapterVO chapterVO = bookVO.getCurrentChapter();
+        System.out.println(chapterVO.getChapterName());
+        System.out.println(chapterVO.getContent());
+        System.out.print(LocalTime.now().toString());
+        System.out.print(" n - 下一章 p - 前一章 m - 显示目录  M:[数字] - 跳转到相应章节 r - 重新看书 quit - 退出");
     }
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         ConsoleReader consoleReader = new ConsoleReader();
         consoleReader.start();
 
