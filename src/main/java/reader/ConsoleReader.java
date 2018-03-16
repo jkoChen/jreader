@@ -17,9 +17,6 @@ public class ConsoleReader {
 
     private Scanner scanner;
 
-    private int len = 50;
-
-
     private void showContent() {
         for (int i = 0; i < bookVO.getContents().getChapters().size() - bookVO.getChapterIndex(); i++) {
             ChapterVO chapterVO = bookVO.getContents().getChapters().get(bookVO.getChapterIndex() + i);
@@ -115,16 +112,6 @@ public class ConsoleReader {
     public void start() {
         scanner = new Scanner(System.in);
         String value = null;
-        System.out.print("请输入每行打印字数:");
-        String val = getInput();
-        if (val != null) {
-            try {
-                Integer i = Integer.parseInt(val);
-                len = i;
-            } catch (Exception e) {
-
-            }
-        }
 
         do {
             searchBook();
