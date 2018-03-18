@@ -17,26 +17,37 @@ public class ConsoleReader {
 
     private Scanner scanner;
 
+    public ConsoleReader() {
+    }
+
+    public ConsoleReader(String[] args) {
+        try {
+            this.bookVO = BookSiteEnum.values()[Integer.parseInt(args[0])].getBookSite().search(args[1]).get(0);
+            if (args.length == 3) {
+                jump(Integer.parseInt(args[2]));
+            }
+        } catch (Exception e) {
+        }
+    }
+
     private void showContent() {
-        for (int i = 0; i < bookVO.getContents().getChapters().size() - bookVO.getChapterIndex(); i++) {
+        for (int i = 0; i < bookVO.getContents().getChapters().size() - bookVO.getChapterIndex() && i < 20; i++) {
             ChapterVO chapterVO = bookVO.getContents().getChapters().get(bookVO.getChapterIndex() + i);
             System.out.println(bookVO.getChapterIndex() + i + ":" + chapterVO.getChapterName() + (i == 0 ? "(*)" : ""));
-            if ((i + 1) % 20 == 0) {
-                System.out.print("想看哪一个章节(n:显示下面20章):");
-                String value = getInput();
-                if (value.equals("n")) {
-                    continue;
-                } else {
-                    while (true) {
-                        try {
-                            int page = Integer.parseInt(value);
-                            bookVO.setChapterIndex(page);
-                            return;
-                        } catch (Exception e) {
-                            System.out.print("请输入正确的章节序号:");
-                            value = getInput();
-                        }
-                    }
+        }
+        System.out.print("想看哪一个章节(n:显示下面20章):");
+        String value = getInput();
+        if (value.equals("n")) {
+            showContent();
+        } else {
+            while (true) {
+                try {
+                    int page = Integer.parseInt(value);
+                    jump(page);
+                    return;
+                } catch (Exception e) {
+                    System.out.print("请输入正确的章节序号:");
+                    value = getInput();
                 }
             }
         }
@@ -112,7 +123,6 @@ public class ConsoleReader {
     public void start() {
         scanner = new Scanner(System.in);
         String value = null;
-
         do {
             searchBook();
             print();
@@ -155,7 +165,7 @@ public class ConsoleReader {
 
 
     public static void main(String[] args) {
-        ConsoleReader consoleReader = new ConsoleReader();
+        ConsoleReader consoleReader = new ConsoleReader(args);
         consoleReader.start();
 
     }
