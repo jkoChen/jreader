@@ -149,8 +149,9 @@ public class ConsoleReader {
         ChapterVO chapterVO = bookVO.getCurrentChapter();
         System.out.println(chapterVO.getChapterName());
         System.out.println(chapterVO.getContent());
+        System.out.print(bookVO.getChapterIndex() +" >>> ");
         System.out.print(LocalTime.now().toString());
-        System.out.print(" n - 下一章 p - 前一章 m - 显示目录  M:[数字] - 跳转到相应章节 r - 重新看书 quit - 退出");
+        System.out.print( " >>> n - 下一章 p - 前一章 m - 显示目录  M:[数字] - 跳转到相应章节 r - 重新看书 quit - 退出");
     }
 
 
