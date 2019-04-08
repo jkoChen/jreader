@@ -11,7 +11,10 @@ public enum BookSiteEnum {
     BQG(new BqgSite(), "笔趣阁"),
     DING_DIAN(new DingdianSite(), "顶点小说"),
     AI_SHANG(new AiShangSite(), "爱尚小说"),
-    XBQG(new XbqgSite(), "新笔趣阁"),;
+    XBQG(new XbqgSite(), "新笔趣阁"),
+    NEW_DING_DIAN(new NewDingdianSite(), "新顶点"),
+
+    ;
 
     public IBookSite getBookSite() {
         return bookSite;

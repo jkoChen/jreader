@@ -33,6 +33,10 @@ public class DownloadBook {
     void download(int index, String bookName, String dir) throws IOException {
         IBookSite bookSite = BookSiteEnum.values()[index].getBookSite();
         List<BookVO> list = bookSite.search(bookName);
+        if (list.size() == 0) {
+            System.out.println("搜索不到该书籍：" + bookName);
+            return;
+        }
         for (BookVO r : list) {
             if (!r.getBookName().equals(bookName)) continue;
             System.out.println(r.getBookName());
@@ -92,6 +96,8 @@ public class DownloadBook {
      * @param args 3位
      */
     public static void main(String[] args) {
+        args = new String[]{"4", "走进修仙", "D:/Downloads/tmp/book2"};
+
         if (args != null) {
             if (args.length == 3) {
                 try {

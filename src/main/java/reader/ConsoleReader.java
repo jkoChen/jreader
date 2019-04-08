@@ -5,7 +5,8 @@ import pojo.ChapterVO;
 import site.BookSiteEnum;
 
 import java.time.LocalTime;
-import java.util.*;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * 命令行阅读器
@@ -33,11 +34,11 @@ public class ConsoleReader {
     private void showContent() {
         for (int i = 0; i < bookVO.getContents().getChapters().size() - bookVO.getChapterIndex() && i < 20; i++) {
             ChapterVO chapterVO = bookVO.getContents().getChapters().get(bookVO.getChapterIndex() + i);
-            System.out.println(bookVO.getChapterIndex() + i + ":" + chapterVO.getChapterName() + (i == 0 ? "(*)" : ""));
+            sysPrintln(bookVO.getChapterIndex() + i + ":" + chapterVO.getChapterName() + (i == 0 ? "(*)" : ""));
         }
-        System.out.print("想看哪一个章节(n:显示下面20章):");
-        String value = getInput();
+        String value = getInput("想看哪一个章节(n:显示下面20章)");
         if (value.equals("n")) {
+            bookVO.setChapterIndex(bookVO.getChapterIndex() + 20);
             showContent();
         } else {
             while (true) {
@@ -46,8 +47,7 @@ public class ConsoleReader {
                     jump(page);
                     return;
                 } catch (Exception e) {
-                    System.out.print("请输入正确的章节序号:");
-                    value = getInput();
+                    value = getInput("请输入正确的章节序号");
                 }
             }
         }
@@ -63,13 +63,12 @@ public class ConsoleReader {
         while (bookSiteEnum == null) {
             try {
                 for (int i = 0; i < BookSiteEnum.values().length; i++) {
-                    System.out.println((i + 1) + ":" + BookSiteEnum.values()[i].getDesc());
+                    sysPrintln((i + 1) + ":" + BookSiteEnum.values()[i].getDesc());
                 }
-                System.out.print("选择小说源:");
-                String siteNum = getInput();
+                String siteNum = getInput("选择小说源");
                 bookSiteEnum = BookSiteEnum.values()[Integer.parseInt(siteNum) - 1];
             } catch (Exception e) {
-                System.err.println("小说源序号有无");
+                System.err.println("小说源序号有误");
             }
         }
         return bookSiteEnum;
@@ -80,10 +79,9 @@ public class ConsoleReader {
         while (bookVO == null) {
             try {
                 for (int i = 1; i < list.size() + 1; i++) {
-                    System.out.println(i + ":" + list.get(i - 1).getBookName());
+                    sysPrintln(i + ":" + list.get(i - 1).getBookName());
                 }
-                System.out.print("想看哪本书:");
-                String value = getInput();
+                String value = getInput("想看哪本书");
                 bookVO = list.get(Integer.parseInt(value) - 1);
             } catch (Exception e) {
                 System.err.println("书本序号有误");
@@ -94,7 +92,10 @@ public class ConsoleReader {
         return bookVO;
     }
 
-    private String getInput() {
+    private String getInput(String desc) {
+        if (desc != null && !desc.isEmpty()) {
+            sysPrint(desc + ":");
+        }
         String value = scanner.nextLine();
         if ("quit".equalsIgnoreCase(value)) {
             System.exit(0);
@@ -106,9 +107,7 @@ public class ConsoleReader {
         while (this.bookVO == null) {
             try {
                 BookSiteEnum bookSiteEnum = selectBookSite();
-                System.out.print(bookSiteEnum.getDesc() + "   ");
-                System.out.print("搜索:");
-                String value = getInput();
+                String value = getInput(bookSiteEnum.getDesc() + "   搜索");
                 List<BookVO> list = bookSiteEnum.getBookSite().search(value);
                 this.bookVO = selectBook(list);
                 bookVO.cache();
@@ -126,7 +125,7 @@ public class ConsoleReader {
         do {
             searchBook();
             print();
-            value = getInput();
+            value = getInput("");
             if (value == null || value.trim().isEmpty()) {
                 value = "n";
             }
@@ -155,13 +154,27 @@ public class ConsoleReader {
 
     }
 
+    /**
+     * 替换sysPrint
+     */
+    private void sysPrintln(String content) {
+//        System.out.println(new String(content.getBytes(), StandardCharsets.UTF_8));
+        System.out.println(content);
+    }
+
+    private void sysPrint(String content) {
+//        System.out.print(new String(content.getBytes(), StandardCharsets.UTF_8));
+        System.out.print(content);
+    }
+
+
     private void print() {
         ChapterVO chapterVO = bookVO.getCurrentChapter();
-        System.out.println(chapterVO.getChapterName());
-        System.out.println(chapterVO.getContent());
-        System.out.print(bookVO.getChapterIndex() +" >>> ");
-        System.out.print(LocalTime.now().toString());
-        System.out.print( " >>> n - 下一章 p - 前一章 m - 显示目录  M:[数字] - 跳转到相应章节 r - 重新看书 quit - 退出");
+        sysPrintln(chapterVO.getChapterName());
+        sysPrintln(chapterVO.getContent());
+        sysPrint(bookVO.getChapterIndex() + " >>> ");
+        sysPrint(LocalTime.now().toString());
+        sysPrint(" >>> n - 下一章 p - 前一章 m - 显示目录  M:[数字] - 跳转到相应章节 r - 重新看书 quit - 退出");
     }
 
 
