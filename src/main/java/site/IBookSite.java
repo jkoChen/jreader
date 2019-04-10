@@ -86,7 +86,7 @@ public interface IBookSite {
             s = s.replaceAll("<(S*?)[^>]*>.*?|<.*? />", "").replaceAll("<br>", "").replaceAll("&nbsp;", "").trim();
 
             if (!s.isEmpty()) {
-                sb.append(s).append("\n");
+                sb.append("\t").append(s).append("\n");
             }
 
         }
