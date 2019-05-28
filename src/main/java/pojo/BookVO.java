@@ -1,5 +1,6 @@
 package pojo;
 
+import com.alibaba.fastjson.JSONObject;
 import site.IBookSite;
 
 import java.io.IOException;
@@ -258,5 +259,13 @@ public class BookVO {
     @Override
     public String toString() {
         return this.bookName;
+    }
+
+    public String toInfo() {
+        JSONObject json = new JSONObject();
+        json.put("site", bookSite.bookSite().toString());
+        json.put("bookName", bookName);
+        json.put("chapter", chapterIndex);
+        return json.toString();
     }
 }

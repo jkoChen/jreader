@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="reader.gui.GuiController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="reader.gui.GuiController">
    <children>
       <TextField fx:id="searchText" layoutX="22.0" layoutY="25.0" prefHeight="23.0" prefWidth="300.0" promptText="请输入书名" />
       <Button fx:id="searchButton" layoutX="518.0" layoutY="25.0" mnemonicParsing="false" text="搜索" />
@@ -32,5 +32,7 @@
             <Font name="YouYuan" size="14.0" />
          </font>
       </Button>
+      <Button fx:id="readCache" layoutX="568.0" layoutY="25.0" mnemonicParsing="false" text="读取" />
+      <Button fx:id="saveCache" layoutX="573.0" layoutY="61.0" mnemonicParsing="false" text="缓存" />
    </children>
 </AnchorPane>

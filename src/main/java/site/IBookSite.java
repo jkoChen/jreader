@@ -60,6 +60,8 @@ public interface IBookSite {
      */
     Element getChapterContent(Document document);
 
+    BookSiteEnum bookSite();
+
     /**
      * 小说中插入的广告词 ，在相应的类中重写这个方法，可以替换掉广告词
      *

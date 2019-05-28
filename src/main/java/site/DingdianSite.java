@@ -40,5 +40,9 @@ public class DingdianSite implements IBookSite {
     public Element getChapterContent(Document document) {
         return document.getElementById("content");
     }
+    @Override
+    public BookSiteEnum bookSite() {
+        return BookSiteEnum.DING_DIAN;
+    }
 
 }

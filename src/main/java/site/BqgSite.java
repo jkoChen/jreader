@@ -57,4 +57,9 @@ public class BqgSite implements IBookSite {
     public Set<String> AD() {
         return Collections.singleton("chaptererror\\(\\);");
     }
+
+    @Override
+    public BookSiteEnum bookSite() {
+        return BookSiteEnum.BQG;
+    }
 }

@@ -37,4 +37,13 @@ public enum BookSiteEnum {
     public String toString() {
         return this.desc;
     }
+
+    public static BookSiteEnum of(String desc) {
+        for (BookSiteEnum value : values()) {
+            if (value.desc.equals(desc)) {
+                return value;
+            }
+        }
+        throw new RuntimeException();
+    }
 }

@@ -52,6 +52,11 @@ public class AiShangSite implements IBookSite {
     }
 
     @Override
+    public BookSiteEnum bookSite() {
+        return BookSiteEnum.AI_SHANG;
+    }
+
+    @Override
     public Set<String> AD() {
         return Collections.singleton("一秒记住【爱♂尚★小△说§网 WwW.23XS.Cc】，精彩小说无弹窗免费阅读！");
     }

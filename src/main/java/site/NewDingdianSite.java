@@ -80,5 +80,8 @@ public class NewDingdianSite implements IBookSite {
     public Element getChapterContent(Document document) {
         return document.getElementById("content");
     }
-
+    @Override
+    public BookSiteEnum bookSite() {
+        return BookSiteEnum.NEW_DING_DIAN;
+    }
 }

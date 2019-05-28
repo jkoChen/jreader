@@ -22,5 +22,8 @@ public class XbqgSite extends BqgSite {
     protected String getRootUrl() {
         return "http://www.xxbiquge.com%s";
     }
-
+    @Override
+    public BookSiteEnum bookSite() {
+        return BookSiteEnum.XBQG;
+    }
 }
